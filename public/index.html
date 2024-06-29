@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ban User</title>
+  <script>
+    function validateForm() {
+      const username = document.getElementById('username').value;
+      const banType = document.getElementById('banType').value;
+      const reason = document.getElementById('reason').value;
+      const customReason = document.getElementById('customReason').value;
+      const submitButton = document.getElementById('submitButton');
+      if (reason === 'Custom') {
+        submitButton.disabled = !(username && banType && customReason);
+      } else {
+        submitButton.disabled = !(username && banType && reason);
+      }
+    }
+
+    function toggleCustomReason() {
+      const reason = document.getElementById('reason').value;
+      const customReasonDiv = document.getElementById('customReasonDiv');
+      if (reason === 'Custom') {
+        customReasonDiv.style.display = 'block';
+      } else {
+        customReasonDiv.style.display = 'none';
+        document.getElementById('customReason').value = '';
+      }
+      validateForm();
+    }
+
+    function showConfirmation(event) {
+      event.preventDefault();
+      const form = document.getElementById('banForm');
+      const reason = form.reason.value === 'Custom' ? form.customReason.value : form.reason.value;
+      const confirmationMessage = document.createElement('div');
+      confirmationMessage.innerHTML = `
+        <h1>✅ Ban Successful</h1>
+        <p>User ${form.username.value} has been ${form.banType.value === 'temporary' ? 'temporarily' : 'permanently'} banned for: ${reason}.</p>
+        <a href="/">Go back</a>
+      `;
+      document.body.innerHTML = '';
+      document.body.appendChild(confirmationMessage);
+    }
+  </script>
+</head>
+<body>
+  <nav>
+    <a href="/" onclick="document.location='/'; return false;">Ban</a> | 
+    <a href="/unban.html" onclick="document.location='/unban.html'; return false;">Unban</a>
+  </nav>
+  <h1>Ban User</h1>
+  <form id="banForm" action="/ban" method="post" onsubmit="showConfirmation(event)">
+    <label for="username">Username:</label>
+    <input list="usernames" id="username" name="username" required oninput="validateForm()">
+    <datalist id="usernames">
+      <option value="baby_yoda">
+      <option value="baby_shark">
+      <option value="baby_dragon">
+      <!-- Add more static options here -->
+    </datalist><br><br>
+
+    <label for="banType">Ban Type:</label>
+    <select id="banType" name="banType" required onchange="validateForm()">
+      <option value="temporary">Temporary</option>
+      <option value="permanent">Permanent</option>
+    </select><br><br>
+
+    <label for="reason">Reason:</label>
+    <select id="reason" name="reason" required onchange="toggleCustomReason()">
+      <option value="ROBLOX ToS Violation(s): Bypassing Filter / Inappropriate Content">ROBLOX ToS Violation(s): Bypassing Filter / Inappropriate Content</option>
+      <option value="ROBLOX ToS Violation(s): Bypassing Filter / Racial Slurs">ROBLOX ToS Violation(s): Bypassing Filter / Racial Slurs</option>
+      <option value="ROBLOX ToS Violation(s): Inappropriate Content">ROBLOX ToS Violation(s): Inappropriate Content</option>
+      <option value="ROBLOX ToS Violation(s): Exploiting">ROBLOX ToS Violation(s): Exploiting</option>
+      <option value="Custom">Custom</option>
+    </select><br><br>
+
+    <div id="customReasonDiv" style="display: none;">
+      <label for="customReason">Custom Reason:</label>
+      <textarea id="customReason" name="customReason" oninput="validateForm()"></textarea><br><br>
+    </div>
+
+    <input type="submit" id="submitButton" value="Ban User" disabled>
+  </form>
+</body>
+</html>

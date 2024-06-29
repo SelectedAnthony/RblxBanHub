@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unban User</title>
+  <script>
+    function validateForm() {
+      const username = document.getElementById('username').value;
+      const submitButton = document.getElementById('submitButton');
+      submitButton.disabled = !username;
+    }
+
+    function showConfirmation(event) {
+      event.preventDefault();
+      const form = document.getElementById('unbanForm');
+      const confirmationMessage = document.createElement('div');
+      confirmationMessage.innerHTML = `
+        <h1>✅ Unban Successful</h1>
+        <p>User ${form.username.value} has been unbanned.</p>
+        <a href="/">Go back</a>
+      `;
+      document.body.innerHTML = '';
+      document.body.appendChild(confirmationMessage);
+    }
+  </script>
+</head>
+<body>
+  <nav>
+    <a href="/" onclick="document.location='/'; return false;">Ban</a> | 
+    <a href="/unban.html" onclick="document.location='/unban.html'; return false;">Unban</a>
+  </nav>
+  <h1>Unban User</h1>
+  <form id="unbanForm" action="/unban" method="post" onsubmit="showConfirmation(event)">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required oninput="validateForm()"><br><br>
+    <input type="submit" id="submitButton" value="Unban User" disabled>
+  </form>
+</body>
+</html>
